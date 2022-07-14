@@ -5,8 +5,9 @@ export class Contacto {
     email = '';
     online = false;
     display = false;
+    
 
-    constructor(name, surname, email, online, display){
+    constructor(name, surname, email, online, display, ){
         this.name = name;
         this.surname = surname;
         this.email = email;

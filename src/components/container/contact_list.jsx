@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Contacto } from '../../models/contacto.class';
 import ContactComponent from '../pure/contacts';
 import ContactForm from '../pure/forms/contactForm';
+import Registerformik from '../pure/forms/registerFormik';
 
 
 const ContactListComponent = () => {
@@ -83,7 +84,8 @@ const ContactListComponent = () => {
                     </div>
                 </div>         
             </div>
-            <ContactForm create={createContact}></ContactForm>
+            {/*<ContactForm create={createContact}></ContactForm>*/}
+            <Registerformik></Registerformik>
         </div>
     );
 };
