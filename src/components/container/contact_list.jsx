@@ -84,8 +84,8 @@ const ContactListComponent = () => {
                     </div>
                 </div>         
             </div>
-            {/*<ContactForm create={createContact}></ContactForm>*/}
-            <Registerformik></Registerformik>
+            <ContactForm create={createContact}></ContactForm>
+            {/*<Registerformik></Registerformik>*/}
         </div>
     );
 };

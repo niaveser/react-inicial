@@ -1,44 +1,56 @@
 
 import React from 'react';
-import { Contacto } from '../../../models/contacto.class';
 import * as Yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { User } from '../../../models/user.class';
+import { ROLES } from '../../../models/roles.enum';
 
 const Registerformik = () => {
 
-    let contacto = new Contacto()
+    let user = new User()
 
     const initialValues = {
-        name: '',
-        surname: '',
+        username: '',
         email: '',
-        online: false,
-        display: false
+        password: '',
+        confirm: '',
+        role: ROLES.USER
         }
 
         const registerSchema = Yup.object().shape(
             {
-                name: Yup.string()
+                username: Yup.string()
                     .required('Name is required')
-                    .min(1, 'Please, introduce a valid name'),
-                surname: Yup.string()
-                    .required('Surname is required')
-                    .min(1, 'Please, introduce a valid name'),
+                    .min(3, 'Username must be at least 3 characters long')
+                    .max(12, 'Username cannot be more than 12 characters long'),
                 email: Yup.string()
                     .required('Email is required')
                     .email('Invalid email format'),
-                online: Yup.bool(),
-                display: Yup.bool()
-            
+                role: Yup.string()
+                    .oneOf([ROLES.USER, ROLES.ADMIN], 'Select a role: User or Admin')
+                    .required('Role is required'),
+                password: Yup.string()
+                    .min(6, 'Password must be at least 6 characters long')
+                    .required('Password is required'),
+                confirm: Yup.string()
+                    .when('password', {
+                        is: value => (value && value.length > 0 ? true : false),
+                        then:Yup.string().oneOf(
+                            [Yup.ref('password')],
+                            'Passwords do not match!'
+                        )
+
+                    }).required('Password must be confirmed')
+                
             }
         )
 
         const submit = (values) => {
-            alert('Create contact')
+            alert('Register user')
         }
     return (
         <div>
-            <h4>Register Formik</h4>
+            <h4>Register User</h4>
             <Formik 
                     initialValues={initialValues} 
                     validationSchema= {registerSchema}
@@ -48,46 +60,51 @@ const Registerformik = () => {
                     }}
                     >
                     {({
-                        values, 
-                        isSubmitting, 
+                        values,
+                        touched,
+                        errors,
+                        isSubmitting,
+                        handleChange,
+                        handleBlur
                         
                     }) => (
 
                         <Form>
-                        <label htmlFor='name'>Name</label>
-                        <Field id='name' name='name' placeholder='Your Name' />
+                        <label htmlFor='username'>Username</label>
+                        <Field id='username' type='text' name="username" placeholder='Your username' />
 
-                        <label htmlFor='surname'>Surname</label>
-                        <Field id='surname' name='surname' placeholder='Your Surname' />
-
+                        {
+                            errors.username && touched.username &&
+                            (
+                                <ErrorMessage name='username' component='div'></ErrorMessage>
+                            )
+                        }
+                        
                         <label htmlFor='email'>Email</label>
-                        <Field id='email' name='email' placeholder='Your Email' />
+                        <Field id='email' type='email' name='email' placeholder='Your Email' />
+                        
+                        {
+                            errors.email && touched.email &&
+                            <ErrorMessage name ='email' component='div'></ErrorMessage>
+                        }
 
-                        <div id='status-radio-group'>Online Status</div>
-                        <div role='group' aria-labelledby='status-radio-group'>
-                            <label>
-                                <Field type="radio" name="status" value="Online" />
-                                Online
-                            </label>
-                            <label>
-                                <Field type="radio" name="status" value ="Offline" />
-                                Offline
-                            </label>
+                        <label htmlFor='password'>Password</label>
+                        <Field id='password' type='password' name='password' placeholder='Your password'/>
 
-                        </div>
-                        <div id='display-radio-group'>Show Contact Info</div>
-                        <div role='group' aria-labelledby='display-radio-group'>
-                            <label>
-                                <Field type="radio" name="display" value="Yes" />
-                                Yes
-                            </label>
-                            <label>
-                                <Field type="radio" name="display" value ="No" />
-                                No
-                            </label>
+                        {
+                            errors.password && touched.password &&
+                            <ErrorMessage name='password' component='div'></ErrorMessage>
+                        }
 
-                        </div>
-                        <button type='submit'>Submit</button>
+                        <label htmlFor='confirm'>Password confirmation</label>
+                        <Field id='confirm' name='confirm' type='password' placeholder='confirm password' />
+
+                        {
+                            errors.confirm && touched.confirm &&
+                            <ErrorMessage name='confirm' component='div'></ErrorMessage>
+                        }
+                        
+                        <button type='submit'>Create Account</button>
                         {isSubmitting ? (<p>Sending your credentials...</p>): null}
                     </Form>
                     )
